@@ -11,25 +11,32 @@
       rel="stylesheet"
     />
   </head>
+
   <body>
-    <div class="topnav" id="myTopnav">
-      <div class="header-logo">
-      <img alt="logo" src="Logo.png" width="auto" height="auto" />
-    </div>
-    <div class="main-navbar">
-      
-      <a href="#" class="active"><span>Accueil</span></a>
-      <a href="#"><span>Détails de l'évènement</span></a>
-      <a href="#"><span>À propos</span></a>
-      <a href="#"><span>Contact</span></a>
-      <a href="#"><span>Évènements passés</span></a>
-      <a href="javascript:void(0);" class="icon" onclick="editNav()">
-        <i class="fa fa-bars"></i>
-      </a>
-    </div>
-    </div>
-  </div>
+    
+    <header>
+
+      <div class="topnav" id="myTopnav">
+        <div class="header-logo">
+          <img alt="logo" src="Logo.png" width="auto" height="auto" />
+        </div>
+
+        <div class="main-navbar">
+          <a href="#" class="active"><span>Accueil</span></a>
+          <a href="#"><span>Détails de l'évènement</span></a>
+          <a href="#"><span>À propos</span></a>
+          <a href="#"><span>Contact</span></a>
+          <a href="#"><span>Évènements passés</span></a>
+          <a href="javascript:void(0);" class="icon" onclick="editNav()">
+            <i class="fa fa-bars"></i>
+          </a>
+        </div>
+      </div>
+
+    </header>
+
     <main>
+
       <div class="hero-section">
         <div class="hero-content">
           <h1 class="hero-headline">
@@ -40,16 +47,10 @@
             Vous aimez jouer ? Notre prochain évènement gaming est ouvert
             aux réservations... Places limitées !
           </p>
-          <button class="btn-signup modal-btn">
-            je m'inscris
-          </button>
+          <button class="btn-signup modal-btn">je m'inscris</button>
         </div>
-        <div class="hero-img">
-          <img src="./bg_img.jpg" alt="img" />
-        </div>
-        <button class="btn-signup modal-btn">
-          je m'inscris
-        </button>
+        <div class="hero-img"><img src="./bg_img.jpg" alt="img" /></div>
+        <button class="btn-signup modal-btn">je m'inscris</button>
       </div>
 
       <div class="bground">
@@ -64,28 +65,29 @@
             >
               <div
                 class="formData">
-                <label>Prénom</label><br>
+                <label for="firstname">Prénom</label><br>
                 <input
                   class="text-control"
                   type="text"
-                  id="first"
-                  name="first"
+                  id="firstname"
+                  name="firstname"
                   minlength="2"
                 /><br>
               </div>
               <div
                 class="formData">
-                <label>Nom</label><br>
+                <label for="lastname">Nom</label><br>
                 <input
                   class="text-control"
                   type="text"
-                  id="last"
-                  name="last"
+                  id="lastname"
+                  name="lastname"
+                  minlength="2"
                 /><br>
               </div>
               <div
                 class="formData">
-                <label>E-mail</label><br>
+                <label for="email">E-mail</label><br>
                 <input
                   class="text-control"
                   type="email"
@@ -95,7 +97,7 @@
               </div>
               <div
                 class="formData">
-                <label>Date de naissance</label><br>
+                <label for="birthdate">Date de naissance</label><br>
                 <input
                   class="text-control"
                   type="date"
@@ -105,12 +107,12 @@
               </div>
               <div
                 class="formData">
-                <label>À combien de tournois GameOn avez-vous déjà participé ?</label><br>
+                <label for="quantity">À combien de tournois GameOn avez-vous déjà participé ?</label><br>
                 <input type="number" class="text-control" id="quantity" name="quantity" min="0" max="99">
               </div>
               <p class="text-label">A quel tournoi souhaitez-vous participer cette année ?</p>
               <div
-                class="formData">
+                class="formData locationlist">
                 <input
                   class="checkbox-input"
                   type="radio"
@@ -186,6 +188,7 @@
                   type="checkbox"
                   id="checkbox1"
                   checked
+                  required
                 />
                 <label class="checkbox2-label" for="checkbox1" required>
                   <span class="checkbox-icon"></span>
