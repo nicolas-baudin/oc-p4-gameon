@@ -190,7 +190,7 @@ main {
 
 label {
   font-family: var(--font-default);
-  font-size: 17px;
+  font-size: 15px;
   font-weight: normal;
   display: inline-block;
   margin-bottom: 11px;
@@ -391,7 +391,7 @@ input[data-error]::after {
 }
 
 /* Hide the items when the select box is closed: */
-.select-hide {
+.select-hide, .hide_element {
   display: none;
 }
 
@@ -402,7 +402,7 @@ input[data-error]::after {
 /* custom select end */
 .text-label {
   font-weight: normal;
-  font-size: 16px;
+  font-size: 15px;
 }
 .hero-section {
   min-height: 93vh;
@@ -527,3 +527,27 @@ footer {
   }
 }
 
+.input-ok {
+  background-color: #c9ffc9;
+}
+
+.input-nok {
+  background-color: #ffd9d9;
+}
+
+.errormsg {
+  display: flex;
+  align-items: center;
+  padding: 0 0.6em;
+  height: 0em;
+  opacity: 0;
+  font-size: 0.5em;
+  color: rgb(255, 130, 130);
+  transition: opacity 300ms ease-in-out 0ms, height 400ms ease-in-out 300ms;
+}
+
+.show-error {
+  height: 3.2em;
+  opacity: 1;
+  transition: height 400ms ease-in-out 0ms, opacity 300ms ease-in-out 400ms;
+}
