@@ -27,13 +27,13 @@ function closeModal() {
 }
 
 // Form variables
+const form = document.getElementById("form");
 const firstName = document.getElementById("firstname");
 const lastName = document.getElementById("lastname");
 const email = document.getElementById("email");
 const birthdate = document.getElementById("birthdate");
 const quantity = document.getElementById("quantity");
-const radioList = document.querySelectorAll('input[name="location"]');
-const radioArray = Array.from(radioList);
+const locationRadio = document.querySelectorAll('input[name="location"]');
 const tos = document.getElementById("tos");
 const news = document.getElementById("news");
 const submitBtn = document.querySelector(".btn-submit");
@@ -48,54 +48,46 @@ let inputIsOK = false;
 let valueFirstname = "";
 let valueLastname = "";
 let valueEmail = "";
-let valueBirthday = today;
+let valuebirthdate = today;
 let valueQuantity = 0;
 let valueLocation = "";
 
 // Regex
-let emailRegex = /^([a-z A-Z 0-9\.-]+)@([a-z A-Z 0-9]+)\.([a-z]{2,8})(\.[a-z]{2,8})?$/;
-let birthdayRegex = /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|3[01])$/;
+let emailRegex = /^([a-z A-Z 0-9\_.-]{2,30})@([a-z A-Z 0-9]{2,20})\.([a-z]{2,8})(\.[a-z]{2,8})?$/;
+let birthdateRegex = /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/;
 
 // Object for data verification
 const dataCheck = {
   firstname: false,
   lastname: false,
   email: false,
-  birthday: false,
+  birthdate: false,
   quantity: false,
   location: false,
   tos: false
 };
 
 // Tables used for listeners
-let inputsListFocusout = [
-  // firstName,
-  // lastName,
-  // email,
-  birthdate,
-  quantity,
-  // tos,
-  // news
-];
-let inputsListChange = [
+const inputsCheck = [
   firstName,
   lastName,
   email,
-  // birthdate,
   quantity,
-  tos,
-  news
+  tos
 ];
+let elementToCheck = "";
 
 // Listener for every form component
-for (input of inputsListFocusout) {
-  input.addEventListener("focusout", keepInputs);
-}
-for (input of inputsListChange) {
-  input.addEventListener("change", keepInputs);
-}
-for (radio of radioArray) {
-  radio.addEventListener("change", keepInputs);
+for (input of inputsCheck) { input.addEventListener("change", inputCheck); }
+// Listen on focusout because it trigger the check too often
+birthdate.addEventListener("focusout", inputCheck);
+// Listen when the user select an option
+for (input of locationRadio) { input.addEventListener("change", checkLocation) };
+submitBtn.addEventListener("click", submitCheck);
+
+function inputCheck() {
+  elementToCheck = this;
+  keepInputs(elementToCheck);
 }
 
 // CSS change function
@@ -113,52 +105,41 @@ function validCSS(element) {
 }
 
 // Function who check values and store them in "base values" variables
-function keepInputs() {
-  console.log(this);
-  const nameType = this.getAttribute("name");
-  let errorText = this.parentElement.querySelector(".errormsg");
+function keepInputs(elementToCheck) {
+  console.log("Keepinput actual elementToCheck : " + elementToCheck);
+  const nameType = elementToCheck.getAttribute("name");
+  let errorText = elementToCheck.parentElement.querySelector(".errormsg");
   
   switch (nameType) {
     // Some validation tests are required
     case "firstname": {
       console.log("--- Firstname test ---");
-      checkNames(this, nameType, errorText);
+      checkNames(elementToCheck, nameType, errorText);
       break;
     }
     case "lastname": {
       console.log("--- Lastname test ---");
-      checkNames(this, nameType, errorText);
+      checkNames(elementToCheck, nameType, errorText);
       break;
     }
     case "email": {
       console.log("--- Email test ---");
-      checkEmail(this, errorText);
+      checkEmail(elementToCheck, errorText);
       break;
     }
     case "birthdate": {
-      console.log("--- Birthday test ---");
-      checkBirthday(this, errorText);
+      console.log("--- birthdate test ---");
+      checkbirthdate(elementToCheck, errorText);
       break;
     }
     case "quantity": {
       console.log("--- Quantity test ---");
-      checkQuantity(this, errorText);
+      checkQuantity(elementToCheck, errorText);
       break;
     }
     case "tos": {
       console.log("--- TOS test ---");
-      checkTOS(this, errorText);
-      break;
-    }
-    // For those, we just have to change some values
-    case "location": {
-      console.log("--- Location test ---");
-      checkLocation(this, errorText);
-      break;
-    }
-    case "news": {
-      console.log("--- Location test ---");
-      checkNews(this, errorText);
+      checkTOS(elementToCheck, errorText);
       break;
     }
   }
@@ -209,6 +190,7 @@ function checkEmail(inputTest, errorText) {
   } else if (!testRegexOK) {
     dataCheck.email = false;
     valueEmail = "";
+    invalidCSS(inputTest);
     errorText.textContent = "Veuillez saisir une adresse e-mail valide.";
     console.log("Test NOK : Email regex failed");
   } else {
@@ -219,37 +201,37 @@ function checkEmail(inputTest, errorText) {
   }
 }
 
-function checkBirthday(inputTest, errorText) {
-  let birthdayValue = inputTest.value;
-  let testRegexOK = birthdayRegex.test(birthdayValue);
-  let isInTheFuture = birthdayValue > today;
+function checkbirthdate(inputTest, errorText) {
+  let birthdateValue = inputTest.value;
+  let testRegexOK = birthdateRegex.test(birthdateValue);
+  let isInTheFuture = birthdateValue > today;
   checkBadValues(inputTest, errorText);
-  console.log("Input value : " + birthdayValue);
+  console.log("Input value : " + birthdateValue);
   console.log("Today date : " + today);
   console.log("Is input in the future ? " + isInTheFuture);
   console.log("Is input OK ? " + inputIsOK);
   console.log("Regex result : " + testRegexOK);
   if (!inputIsOK && inputTest.validity.rangeUnderflow) {
-    dataCheck.birthday = false;
-    valueBirthday = today;
+    dataCheck.birthdate = false;
+    valuebirthdate = today;
     invalidCSS(inputTest);
     errorText.textContent = "Veuillez sélectionner une valeur postérieure ou égale à 01/01/1950.";
     console.log("Test NOK : Not in date range");
   } else if (!testRegexOK) {
-    dataCheck.birthday = false;
-    valueBirthday = today;
+    dataCheck.birthdate = false;
+    valuebirthdate = today;
     invalidCSS(inputTest);
     errorText.textContent = "Veuillez saisir une date de naissance valide.";
-    console.log("Test NOK : Birthday regex failed");
+    console.log("Test NOK : birthdate regex failed");
   } else if (testRegexOK && isInTheFuture) {
-    dataCheck.birthday = false;
-    valueBirthday = today;
+    dataCheck.birthdate = false;
+    valuebirthdate = today;
     invalidCSS(inputTest);
     errorText.textContent = "Veuillez saisir une date de naissance inférieure à la date du jour.";
-    console.log("Test NOK : Birthday is in the future");
+    console.log("Test NOK : birthdate is in the future");
   } else {
-    dataCheck.birthday = true;
-    valueBirthday = birthdayValue;
+    dataCheck.birthdate = true;
+    valuebirthdate = birthdateValue;
     validCSS(inputTest);
     console.log("Test OK");
   }
@@ -270,16 +252,6 @@ function checkQuantity(inputTest, errorText) {
   }
 }
 
-function checkLocation(inputTest, errorText) {
-  let locationValue = document.querySelector('input[name="location"]:checked').value;
-  const errorMsg = document.querySelector(".location-errormsg");
-  console.log("Input value : " + locationValue);
-  dataCheck.location = true;
-  valueLocation = locationValue;
-  errorMsg.classList.remove("show-error");
-  console.log("Test OK");
-}
-
 function checkTOS(inputTest, errorText) {
   if (inputTest.checked) {
     dataCheck.tos = true;
@@ -293,19 +265,32 @@ function checkTOS(inputTest, errorText) {
   }
 }
 
-submitBtn.addEventListener("click", validate);
+// Submit section
+function submitCheck() {
+  inputsCheck.forEach(input => keepInputs(input));
+  keepInputs(birthdate);
+  checkLocation(locationRadio);
+}
+
+function checkLocation() {
+  const errorMsg = document.querySelector(".location-errormsg");
+  console.log("--- Location test ---");
+  for (radio of locationRadio) {
+    if (radio.checked) {
+      valueLocation = locationRadio.value;
+      dataCheck.location = true;
+      errorMsg.classList.remove("show-error");
+      console.log("Test OK");
+      break;
+    } else {
+      dataCheck.location = false;
+      errorMsg.textContent = "Veuillez sélectionner une option.";
+      errorMsg.classList.add("show-error");
+      console.log("Test NOK : No location selected");
+    }
+  }
+}
 
 function validate() {
-
-  if (!dataCheck.location) {
-    const errorMsg = document.querySelector(".location-errormsg");
-    errorMsg.textContent = "Vous devez choisir un endroit.";
-    errorMsg.classList.add("show-error");
-  }
-
-  for (input of inputsListFocusout) {
-    console.log(input);
-    const nameType = input.getAttribute("name");
-    console.log(nameType);
-  }
+  // submitCheck;
 }
