@@ -528,14 +528,16 @@ footer {
 }
 
 .input-ok {
-  background-color: #c9ffc9;
+  background: #cfffcf;
+  transition: all 300ms linear;
 }
 
 .input-nok {
-  background-color: #ffd9d9;
+  background: #ffd9d9;
+  transition: all 300ms linear;
 }
 
-.errormsg {
+.errormsg, .location-errormsg {
   display: flex;
   align-items: center;
   padding: 0 0.6em;

@@ -32,28 +32,29 @@ const lastName = document.getElementById("lastname");
 const email = document.getElementById("email");
 const birthdate = document.getElementById("birthdate");
 const quantity = document.getElementById("quantity");
-let radioList = document.querySelectorAll(".formData:nth-child(7)>input");
-let radioArray = Array.from(radioList);
-const checkList = document.querySelectorAll(".formData:nth-child(8)>input");
-const checkArray = Array.from(checkList);
+const radioList = document.querySelectorAll('input[name="location"]');
+const radioArray = Array.from(radioList);
+const tos = document.getElementById("tos");
+const news = document.getElementById("news");
 const submitBtn = document.querySelector(".btn-submit");
 const formOkMsg = document.querySelector(".formok_message");
 const formOkBtn = document.querySelector(".formok_button");
 const contentElement = document.querySelector(".content");
 
+let today = (new Date()).toISOString().split('T')[0];
+let inputIsOK = false;
+
 // Base values
 let valueFirstname = "";
 let valueLastname = "";
 let valueEmail = "";
-let valueBirthday = new Date(0);
+let valueBirthday = today;
 let valueQuantity = 0;
 let valueLocation = "";
-let valueRadio = 0;
 
 // Regex
 let emailRegex = /^([a-z A-Z 0-9\.-]+)@([a-z A-Z 0-9]+)\.([a-z]{2,8})(\.[a-z]{2,8})?$/;
 let birthdayRegex = /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|3[01])$/;
-let inputIsOK = false;
 
 // Object for data verification
 const dataCheck = {
@@ -68,16 +69,22 @@ const dataCheck = {
 
 // Tables used for listeners
 let inputsListFocusout = [
+  // firstName,
+  // lastName,
+  // email,
+  birthdate,
+  quantity,
+  // tos,
+  // news
+];
+let inputsListChange = [
   firstName,
   lastName,
   email,
-  birthdate,
-  quantity
-];
-let inputsListChange = [
+  // birthdate,
   quantity,
-  checkArray[0],
-  checkArray[1]
+  tos,
+  news
 ];
 
 // Listener for every form component
@@ -88,7 +95,7 @@ for (input of inputsListChange) {
   input.addEventListener("change", keepInputs);
 }
 for (radio of radioArray) {
-  radio.addEventListener("input", keepInputs);
+  radio.addEventListener("change", keepInputs);
 }
 
 // CSS change function
@@ -112,6 +119,7 @@ function keepInputs() {
   let errorText = this.parentElement.querySelector(".errormsg");
   
   switch (nameType) {
+    // Some validation tests are required
     case "firstname": {
       console.log("--- Firstname test ---");
       checkNames(this, nameType, errorText);
@@ -137,14 +145,20 @@ function keepInputs() {
       checkQuantity(this, errorText);
       break;
     }
+    case "tos": {
+      console.log("--- TOS test ---");
+      checkTOS(this, errorText);
+      break;
+    }
+    // For those, we just have to change some values
     case "location": {
       console.log("--- Location test ---");
       checkLocation(this, errorText);
       break;
     }
-    case "tos": {
-      console.log("--- TOS test ---");
-      checkTOS(this, errorText);
+    case "news": {
+      console.log("--- Location test ---");
+      checkNews(this, errorText);
       break;
     }
   }
@@ -208,7 +222,6 @@ function checkEmail(inputTest, errorText) {
 function checkBirthday(inputTest, errorText) {
   let birthdayValue = inputTest.value;
   let testRegexOK = birthdayRegex.test(birthdayValue);
-  let today = (new Date()).toISOString().split('T')[0];
   let isInTheFuture = birthdayValue > today;
   checkBadValues(inputTest, errorText);
   console.log("Input value : " + birthdayValue);
@@ -257,20 +270,42 @@ function checkQuantity(inputTest, errorText) {
   }
 }
 
-function checkLocation() {
-  // if (locationInput == "") {
-  //   - Message d'erreur = "Veuillez indiquer à quel tournoi vous souhaitez participer"
-  //   - Appliquer class display block au message d'erreur enfant
-  // }
+function checkLocation(inputTest, errorText) {
+  let locationValue = document.querySelector('input[name="location"]:checked').value;
+  const errorMsg = document.querySelector(".location-errormsg");
+  console.log("Input value : " + locationValue);
+  dataCheck.location = true;
+  valueLocation = locationValue;
+  errorMsg.classList.remove("show-error");
+  console.log("Test OK");
 }
 
-function checkTOS() {
-  // if (TOS décoché) {
-  //   - Message d'erreur = "Vous devez vérifier que vous acceptez les termes et conditions"
-  //   - Appliquer class display block au message d'erreur enfant
-  // }
+function checkTOS(inputTest, errorText) {
+  if (inputTest.checked) {
+    dataCheck.tos = true;
+    validCSS(inputTest);
+    console.log("Test OK");
+  } else {
+    dataCheck.tos = false;
+    invalidCSS(inputTest);
+    errorText.textContent = "Vous devez valider les conditions générales afin de vous inscrire.";
+    console.log("Test NOK : TOS not checked");
+  }
 }
+
+submitBtn.addEventListener("click", validate);
 
 function validate() {
-  // console.log(inputsList);
+
+  if (!dataCheck.location) {
+    const errorMsg = document.querySelector(".location-errormsg");
+    errorMsg.textContent = "Vous devez choisir un endroit.";
+    errorMsg.classList.add("show-error");
+  }
+
+  for (input of inputsListFocusout) {
+    console.log(input);
+    const nameType = input.getAttribute("name");
+    console.log(nameType);
+  }
 }
