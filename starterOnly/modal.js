@@ -45,14 +45,14 @@ const contentElement = document.querySelector(".content");
 let valueFirstname = "";
 let valueLastname = "";
 let valueEmail = "";
-let valueBirthdate = new Date(0);
+let valueBirthday = new Date(0);
 let valueQuantity = 0;
 let valueLocation = "";
 let valueRadio = 0;
 
 // Regex
 let emailRegex = /^([a-z A-Z 0-9\.-]+)@([a-z A-Z 0-9]+)\.([a-z]{2,8})(\.[a-z]{2,8})?$/;
-let birthdayRegex = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
+let birthdayRegex = /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|3[01])$/;
 let inputIsOK = false;
 
 // Object for data verification
@@ -63,7 +63,7 @@ const dataCheck = {
   birthday: false,
   quantity: false,
   location: false,
-  checktos: false
+  tos: false
 };
 
 // Tables used for listeners
@@ -153,7 +153,6 @@ function keepInputs() {
 // Values check functions
 function checkBadValues(inputTest, errorText) {
   inputIsOK = false;
-  // let inputIsEmpty = inputTest.value == "";
   let inputIsBad = !inputTest.checkValidity();
   if (inputIsBad) {
     inputIsOK = false;
@@ -170,16 +169,16 @@ function checkNames(inputTest, nameType, errorText) {
   checkBadValues(inputTest, errorText);
   console.log("Input type : " + nameType);
   console.log("Input value : " + nameValue);
-  if (inputIsOK) {
+  if (!inputIsOK) {
+    nameType === "firstname" 
+      ? (dataCheck.firstname = false) && (valueFirstname = "")
+      : (dataCheck.lastname = false) && (valueLastname = "");
+  } else {
     nameType === "firstname" 
       ? (dataCheck.firstname = true) && (valueFirstname = nameValue)
       : (dataCheck.lastname = true) && (valueLastname = nameValue);
     validCSS(inputTest);
     console.log("Test OK");
-  } else {
-    nameType === "firstname" 
-      ? (dataCheck.firstname = false) && (valueFirstname = "")
-      : (dataCheck.lastname = false) && (valueLastname = "");
   }
 }
 
@@ -190,41 +189,71 @@ function checkEmail(inputTest, errorText) {
   console.log("Input value : " + emailValue);
   console.log("Is input OK ? " + inputIsOK);
   console.log("Regex result : " + testRegexOK);
-  if (inputIsOK && testRegexOK) {
-    dataCheck.email = true;
-    valueEmail = emailValue;
-    validCSS(inputTest);
-    console.log("Test OK");
-  } else if (!inputIsOK) {
+  if (!inputIsOK) {
     dataCheck.email = false;
     valueEmail = "";
-  } else {
+  } else if (!testRegexOK) {
     dataCheck.email = false;
     valueEmail = "";
     errorText.textContent = "Veuillez saisir une adresse e-mail valide.";
     console.log("Test NOK : Email regex failed");
+  } else {
+    dataCheck.email = true;
+    valueEmail = emailValue;
+    validCSS(inputTest);
+    console.log("Test OK");
   }
 }
 
-function checkBirthday() {
-  // if (format date de naissance != bdayRegex || année indiquée > année actuelle) {
-  //   - Message d'erreur = "Veuillez entrer un email valide"
-  //   - Appliquer class display block au message d'erreur enfant
-  // }
+function checkBirthday(inputTest, errorText) {
+  let birthdayValue = inputTest.value;
+  let testRegexOK = birthdayRegex.test(birthdayValue);
+  let today = (new Date()).toISOString().split('T')[0];
+  let isInTheFuture = birthdayValue > today;
+  checkBadValues(inputTest, errorText);
+  console.log("Input value : " + birthdayValue);
+  console.log("Today date : " + today);
+  console.log("Is input in the future ? " + isInTheFuture);
+  console.log("Is input OK ? " + inputIsOK);
+  console.log("Regex result : " + testRegexOK);
+  if (!inputIsOK && inputTest.validity.rangeUnderflow) {
+    dataCheck.birthday = false;
+    valueBirthday = today;
+    invalidCSS(inputTest);
+    errorText.textContent = "Veuillez sélectionner une valeur postérieure ou égale à 01/01/1950.";
+    console.log("Test NOK : Not in date range");
+  } else if (!testRegexOK) {
+    dataCheck.birthday = false;
+    valueBirthday = today;
+    invalidCSS(inputTest);
+    errorText.textContent = "Veuillez saisir une date de naissance valide.";
+    console.log("Test NOK : Birthday regex failed");
+  } else if (testRegexOK && isInTheFuture) {
+    dataCheck.birthday = false;
+    valueBirthday = today;
+    invalidCSS(inputTest);
+    errorText.textContent = "Veuillez saisir une date de naissance inférieure à la date du jour.";
+    console.log("Test NOK : Birthday is in the future");
+  } else {
+    dataCheck.birthday = true;
+    valueBirthday = birthdayValue;
+    validCSS(inputTest);
+    console.log("Test OK");
+  }
 }
 
 function checkQuantity(inputTest, errorText) {
   let quantityValue = inputTest.valueAsNumber;
   checkBadValues(inputTest, errorText);
   console.log("Input value : " + quantityValue);
-  if (inputIsOK) {
+  if (!inputIsOK) {
+    dataCheck.quantity = false;
+    valueQuantity = 0;
+  } else {
     dataCheck.quantity = true;
     valueQuantity = quantityValue;
     validCSS(inputTest);
     console.log("Test OK");
-  } else {
-    dataCheck.quantity = false;
-    valueQuantity = 0;
   }
 }
 
