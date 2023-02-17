@@ -183,19 +183,19 @@ function checkNames(elementToCheck, nameType, errorText) {
   console.log("Input value : " + nameValue);
   if (!inputIsOK) {
     nameType === "firstname"?
-    (dataCheck.firstname = false) && (valueFirstname = ""):
-    (dataCheck.lastname = false) && (valueLastname = "");
+      (dataCheck.firstname = false) && (valueFirstname = ""):
+      (dataCheck.lastname = false) && (valueLastname = "");
   } else if (!testRegexOK) {
     nameType === "firstname"?
-    (dataCheck.firstname = false) && (valueFirstname = ""):
-    (dataCheck.lastname = false) && (valueLastname = "");
+      (dataCheck.firstname = false) && (valueFirstname = ""):
+      (dataCheck.lastname = false) && (valueLastname = "");
     invalidCSS(elementToCheck);
     errorText.textContent = `Veuillez saisir un ${nameType==="firstname"?"prénom":"nom"} valide.`;
     console.log(`Test NOK : ${elementToCheck.name} Regex failed`);
   } else {
-    nameType === "firstname" 
-      ? (dataCheck.firstname = true) && (valueFirstname = nameValue)
-      : (dataCheck.lastname = true) && (valueLastname = nameValue);
+    nameType === "firstname"?
+      (dataCheck.firstname = true) && (valueFirstname = nameValue):
+      (dataCheck.lastname = true) && (valueLastname = nameValue);
     validCSS(elementToCheck);
     console.log("Test OK");
   }

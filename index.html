@@ -3,8 +3,9 @@
   <head>
     <meta charset="utf-8" />
     <title>Reservation</title>
+    <link rel="icon" type="image/x-icon" href="public/img/favicon.ico">
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <link rel="stylesheet" href="modal.css" />
+    <link rel="stylesheet" type="text/css" href="public/css/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link
       href="https://fonts.googleapis.com/css?family=DM+Sans"
@@ -18,7 +19,7 @@
 
       <div class="topnav" id="myTopnav">
         <div class="header-logo">
-          <img alt="logo" src="Logo.png" width="auto" height="auto" />
+          <img alt="logo" src="public/img/logo.png" width="auto" height="auto" />
         </div>
 
         <div class="main-navbar">
@@ -49,7 +50,7 @@
           </p>
           <button class="btn-signup modal-btn">je m'inscris</button>
         </div>
-        <div class="hero-img"><img src="./bg_img.jpg" alt="img" /></div>
+        <div class="hero-img"><img src="public/img/bg_img.jpg" alt="img" /></div>
         <button class="btn-signup modal-btn">je m'inscris</button>
       </div>
 
@@ -58,7 +59,7 @@
           <span class="close"></span>
           <div class="modal-body">
 
-            <form id="form" name="reserve" action="index.html" method="post" onsubmit="return validate()">
+            <form id="form" name="reserve" action="index.html" method="post" novalidate onsubmit="return validate()">
 
               <div class="formData">
                 <label for="firstname">Prénom</label><br>
@@ -142,6 +143,6 @@
         Copyright 2014 - 2022, GameOn Inc.
       </p>
     </footer>
-    <script src="modal.js"></script>
+    <script src="public/js/modal.js"></script>
   </body>
 </html>
