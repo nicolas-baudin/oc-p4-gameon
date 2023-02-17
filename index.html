@@ -56,7 +56,7 @@
 
       <div class="bground">
         <div class="content">
-          <span class="close"></span>
+          <span class="btn-close"></span>
           <div class="modal-body">
 
             <form id="form" name="reserve" action="index.html" method="post" novalidate onsubmit="return validate()">
@@ -91,8 +91,8 @@
                 <p class="errormsg hide-error"></p>
               </div>
 
-              <p class="text-label">A quel tournoi souhaitez-vous participer cette année ?</p>
               <div class="formData locationlist">
+                <p class="text-label">A quel tournoi souhaitez-vous participer cette année ?</p>
                 <input class="checkbox-input" type="radio" id="location1" name="location" value="New York" />
                 <label class="checkbox-label" for="location1"><span class="checkbox-icon"></span>New York</label>
                 <input class="checkbox-input" type="radio" id="location2" name="location" value="San Francisco" />
@@ -125,13 +125,13 @@
                 <br>
               </div>
               <br>
-              <input class="btn-submit" type="submit" class="button" value="C'est parti" />
+              <input class="button btn-submit" type="submit" value="C'est parti" />
 
             </form>
 
-            <div class="formok hide_element">
-              <p class="formok_message"></p>
-              <input class="btn-close" type="close" class="button formok_button" value="Fermer le formulaire"/>
+            <div class="formok hide-element">
+              <p class="formok-message">Merci pour<br> votre inscription</p>
+              <button class="btn-signup modal-btn formok-close" type="button">Fermer</button>
             </div>
 
           </div>

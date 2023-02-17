@@ -197,6 +197,22 @@ main {
   padding-top: 10px;
 }
 
+@media screen and (max-width: 670px) {
+  .bground {
+    background-color: transparent;
+  }
+  .content {
+    margin: 120px 0 0 0;
+    width: 100%;
+    min-width: 490px;
+    border-radius: 10px 10px 0 0;
+    position: fixed;
+    bottom: 0;
+    overflow-y: scroll;
+    height: calc(100% - 120px);
+  }
+}
+
 .modal-body {
   padding: 15px 8%;
   margin: 15px auto;
@@ -310,7 +326,7 @@ input[data-error]::after {
   left: 21%;
   top: 19%;
 }
-.close {
+.btn-close {
   position: absolute;
   right: 15px;
   top: 15px;
@@ -320,8 +336,8 @@ input[data-error]::after {
   cursor: pointer;
   transform: scale(0.7);
 }
-.close:before,
-.close:after {
+.btn-close:before,
+.btn-close:after {
   position: absolute;
   left: 15px;
   content: " ";
@@ -329,10 +345,10 @@ input[data-error]::after {
   width: 3px;
   background-color: #fff;
 }
-.close:before {
+.btn-close:before {
   transform: rotate(45deg);
 }
-.close:after {
+.btn-close:after {
   transform: rotate(-45deg);
 }
 .btn-submit,
@@ -405,8 +421,8 @@ input[data-error]::after {
 }
 
 /* Hide the items when the select box is closed: */
-.select-hide, .hide_element {
-  display: none;
+.select-hide, .hide-element {
+  display: none !important;
 }
 
 .select-items div:hover,
@@ -557,12 +573,12 @@ footer {
 }
 
 .input-ok {
-  background: #cfffcf;
+  outline: 2px solid #a2ffa2;
   transition: all 300ms linear;
 }
 
 .input-nok {
-  background: #ffd9d9;
+  outline: 2px solid #ff9393;
   transition: all 300ms linear;
 }
 
@@ -581,4 +597,27 @@ footer {
   height: 3.2em;
   opacity: 1;
   transition: height 400ms ease-in-out 0ms, opacity 300ms ease-in-out 400ms;
+}
+
+.formok {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.formok-message {
+  font-size: 1.5em;
+  text-align: center;
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.formok-close {
+  width: 50%;
+}
+
+.noscroll {
+  overflow: hidden;
 }

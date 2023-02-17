@@ -8,6 +8,7 @@ function editNav() {
 }
 
 // DOM Elements
+const body = document.body;
 const modalBg = document.querySelector(".bground");
 const modalBtn = document.querySelectorAll(".modal-btn");
 const formData = document.querySelectorAll(".formData");
@@ -15,15 +16,26 @@ const formData = document.querySelectorAll(".formData");
 // launch and close modal event
 modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
 
+// Variables for close buttons
+const closeBtn = document.querySelector(".btn-close");
+const formOkBtn = document.querySelector(".formok-close");
+
 // Launch modal form + fix 1
 function launchModal() {
   modalBg.style.display = "block";
-  const closeBtn = document.querySelector(".close");
+  body.classList.add("noscroll");
   closeBtn.addEventListener("click", closeModal);
+  formOkBtn.addEventListener("click", closeValid);
+  window.scrollTo(0, 0);
 }
-
 function closeModal() {
   modalBg.style.display = "none";
+  body.classList.remove("noscroll");
+}
+function closeValid() {
+  modalBg.style.display = "none";
+  body.classList.remove("noscroll");
+  formAgain();
 }
 
 // Form variables
@@ -37,9 +49,7 @@ const locationRadio = document.querySelectorAll('input[name="location"]');
 const tos = document.getElementById("tos");
 const news = document.getElementById("news");
 const submitBtn = document.querySelector(".btn-submit");
-const formOkMsg = document.querySelector(".formok_message");
-const formOkBtn = document.querySelector(".formok_button");
-const contentElement = document.querySelector(".content");
+const formOk = document.querySelector(".formok");
 
 let today = (new Date()).toISOString().split('T')[0];
 let inputIsOK = false;
@@ -52,7 +62,7 @@ let valuebirthdate = today;
 let valueQuantity = 0;
 let valueLocation = "";
 let valueTOS = "";
-let valueNews = "";
+let valueNews = "Non";
 
 // Regex
 let emailRegex = /^[a-z0-9]+([\.-]?[a-z0-9]+)*@\w+[a-z0-9]+([\.-]?[a-z0-9]+)*(\.[a-z]{2,3})+$/;
@@ -89,8 +99,6 @@ birthdate.addEventListener("focusout", inputCheck);
 // Listen when the user select an option
 for (input of locationRadio) { input.addEventListener("change", inputCheck) };
 
-submitBtn.addEventListener("click", validate);
-
 function inputCheck() {
   elementToCheck = this;
   keepInputs(elementToCheck);
@@ -112,7 +120,6 @@ function validCSS(elementToCheck) {
 
 // Function who check values and store them in "base values" variables
 function keepInputs(elementToCheck) {
-  console.log("Keepinput actual elementToCheck : " + elementToCheck);
   const nameType = elementToCheck.getAttribute("name");
   let errorText = elementToCheck.parentElement.querySelector(".errormsg");
   
@@ -206,8 +213,6 @@ function checkEmail(elementToCheck, errorText) {
   let testRegexOK = emailRegex.test(emailValue);
   checkBadValues(elementToCheck, errorText);
   console.log("Input value : " + emailValue);
-  console.log("Is input OK ? " + inputIsOK);
-  console.log("Regex result : " + testRegexOK);
   if (!inputIsOK) {
     dataCheck.email = false;
     valueEmail = "";
@@ -231,10 +236,6 @@ function checkbirthdate(elementToCheck, errorText) {
   let isInTheFuture = birthdateValue > today;
   checkBadValues(elementToCheck, errorText);
   console.log("Input value : " + birthdateValue);
-  console.log("Today date : " + today);
-  console.log("Is input in the future ? " + isInTheFuture);
-  console.log("Is input OK ? " + inputIsOK);
-  console.log("Regex result : " + testRegexOK);
   if (!inputIsOK && elementToCheck.validity.rangeUnderflow) {
     dataCheck.birthdate = false;
     valuebirthdate = today;
@@ -246,13 +247,13 @@ function checkbirthdate(elementToCheck, errorText) {
     valuebirthdate = today;
     invalidCSS(elementToCheck);
     errorText.textContent = "Veuillez saisir une date de naissance valide.";
-    console.log("Test NOK : birthdate regex failed");
+    console.log("Test NOK : Birthdate regex failed");
   } else if (testRegexOK && isInTheFuture) {
     dataCheck.birthdate = false;
     valuebirthdate = today;
     invalidCSS(elementToCheck);
     errorText.textContent = "Veuillez saisir une date de naissance inférieure à la date du jour.";
-    console.log("Test NOK : birthdate is in the future");
+    console.log("Test NOK : Birthdate is in the future");
   } else {
     dataCheck.birthdate = true;
     valuebirthdate = birthdateValue;
@@ -313,7 +314,7 @@ function checkNews(elementToCheck) {
     valueNews = "Oui";
     console.log("News YES");
   } else {
-    valueNews = "";
+    valueNews = "Non";
     console.log("News NO");
   }
 }
@@ -323,9 +324,32 @@ function submitCheck() {
   inputsCheck.forEach(input => keepInputs(input));
   keepInputs(birthdate);
   if (dataCheck.location == false) {
-    console.log("--- Submit Location Check ---");
+    console.log("--- Location test ---");
     locationFalse();
   };
+}
+
+function formComplete() {
+  const formElements = document.getElementsByClassName("formData");
+  const elementsToHide = Array.from(formElements).concat(submitBtn);
+  for (element of elementsToHide) {
+    element.classList.add("hide-element");
+  };
+  formOk.classList.remove("hide-element");
+}
+
+function formAgain() {
+  form.reset();
+  const formElements = document.getElementsByClassName("formData");
+  const elementsToHide = Array.from(formElements).concat(submitBtn);
+  for (element of elementsToHide) {
+    element.classList.remove("hide-element");
+  };
+  formOk.classList.add("hide-element");
+  for (input of inputsCheck) {
+    input.classList.remove("input-ok");
+  };
+  birthdate.classList.remove("input-ok");
 }
 class storeValues {
   constructor (
@@ -347,10 +371,10 @@ class storeValues {
     this.tos = tos;
     this.news = news;
   }
-};
+}
 
 function validate() {
-  submitCheck();
+  console.log("((~~ SUBMIT FUNCTION ~~))");
   let allTrue = Object.keys(dataCheck).every(function(k){ return dataCheck[k] });
   if (allTrue) {
     const dataTab = new storeValues(
@@ -363,10 +387,13 @@ function validate() {
       valueTOS,
       valueNews
     );
-    console.log("~~~~ TOUT EST OK ~~~~");
-    console.log(dataTab);
+    console.log("~~~~ SUBMIT OK ~~~~");
+    console.table(dataTab);
+    formComplete();
     return false;
   } else {
+    console.log("~~~~ SUBMIT NOK ~~~~");
+    submitCheck();
     return false;
   }
 }
