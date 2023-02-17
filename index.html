@@ -58,17 +58,17 @@
           <span class="close"></span>
           <div class="modal-body">
 
-            <form id="form" name="reserve" action="index.html" method="post" >
+            <form id="form" name="reserve" action="index.html" method="post" onsubmit="return validate()">
 
               <div class="formData">
                 <label for="firstname">Prénom</label><br>
-                <input class="text-control" type="text" pattern="[a-zA-Z]*" id="firstname" name="firstname" minlength="2" required /><br>
+                <input class="text-control" type="text" id="firstname" name="firstname" minlength="2" required /><br>
                 <p class="errormsg hide-error"></p>
               </div>
 
               <div class="formData">
                 <label for="lastname">Nom</label><br>
-                <input class="text-control" type="text" pattern="[a-zA-Z]*" id="lastname" name="lastname" minlength="2" required /><br>
+                <input class="text-control" type="text" id="lastname" name="lastname" minlength="2" required /><br>
                 <p class="errormsg hide-error"></p>
               </div>
 

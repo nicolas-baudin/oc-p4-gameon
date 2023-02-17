@@ -51,10 +51,13 @@ let valueEmail = "";
 let valuebirthdate = today;
 let valueQuantity = 0;
 let valueLocation = "";
+let valueTOS = "";
+let valueNews = "";
 
 // Regex
-let emailRegex = /^([a-z A-Z 0-9\_.-]{2,30})@([a-z A-Z 0-9]{2,20})\.([a-z]{2,8})(\.[a-z]{2,8})?$/;
+let emailRegex = /^[a-z0-9]+([\.-]?[a-z0-9]+)*@\w+[a-z0-9]+([\.-]?[a-z0-9]+)*(\.[a-z]{2,3})+$/;
 let birthdateRegex = /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/;
+let nameRegex = /^[A-Z]{1}(?!.*(.).{0}}\1)[^0-9_!¡?÷?¿\\+=@#$%\^&*(){}|~<>;:[\]"\/]{1,}[^0-9_!¡?÷?¿\\+=@#$%\^&*(){}|~<>;:[\]"\/\-_',]{1}$/;
 
 // Object for data verification
 const dataCheck = {
@@ -73,8 +76,10 @@ const inputsCheck = [
   lastName,
   email,
   quantity,
-  tos
+  tos,
+  news
 ];
+
 let elementToCheck = "";
 
 // Listener for every form component
@@ -82,8 +87,9 @@ for (input of inputsCheck) { input.addEventListener("change", inputCheck); }
 // Listen on focusout because it trigger the check too often
 birthdate.addEventListener("focusout", inputCheck);
 // Listen when the user select an option
-for (input of locationRadio) { input.addEventListener("change", checkLocation) };
-submitBtn.addEventListener("click", submitCheck);
+for (input of locationRadio) { input.addEventListener("change", inputCheck) };
+
+submitBtn.addEventListener("click", validate);
 
 function inputCheck() {
   elementToCheck = this;
@@ -91,17 +97,17 @@ function inputCheck() {
 }
 
 // CSS change function
-function invalidCSS(element) {
-  const errorMsg = element.parentElement.querySelector(".errormsg");
-  element.classList.add("input-nok");
-  element.classList.remove("input-ok");
-  errorMsg.classList.add("show-error");
+function invalidCSS(elementToCheck) {
+  const errorText = elementToCheck.parentElement.querySelector(".errormsg");
+  elementToCheck.classList.add("input-nok");
+  elementToCheck.classList.remove("input-ok");
+  errorText.classList.add("show-error");
 }
-function validCSS(element) {
-  const errorMsg = element.parentElement.querySelector(".errormsg");
-  element.classList.add("input-ok");
-  element.classList.remove("input-nok");
-  errorMsg.classList.remove("show-error");
+function validCSS(elementToCheck) {
+  const errorText = elementToCheck.parentElement.querySelector(".errormsg");
+  elementToCheck.classList.add("input-ok");
+  elementToCheck.classList.remove("input-nok");
+  errorText.classList.remove("show-error");
 }
 
 // Function who check values and store them in "base values" variables
@@ -128,7 +134,7 @@ function keepInputs(elementToCheck) {
       break;
     }
     case "birthdate": {
-      console.log("--- birthdate test ---");
+      console.log("--- Birthdate test ---");
       checkbirthdate(elementToCheck, errorText);
       break;
     }
@@ -137,50 +143,68 @@ function keepInputs(elementToCheck) {
       checkQuantity(elementToCheck, errorText);
       break;
     }
+    case "location": {
+      console.log("--- Location test ---");
+      checkLocation(elementToCheck);
+      break;
+    }
     case "tos": {
       console.log("--- TOS test ---");
-      checkTOS(elementToCheck, errorText);
+      checkTOS(elementToCheck);
+      break;
+    }
+    case "news": {
+      console.log("--- Newsletter test ---");
+      checkNews(elementToCheck);
       break;
     }
   }
 }
 
 // Values check functions
-function checkBadValues(inputTest, errorText) {
+function checkBadValues(elementToCheck, errorText) {
   inputIsOK = false;
-  let inputIsBad = !inputTest.checkValidity();
+  let inputIsBad = !elementToCheck.checkValidity();
   if (inputIsBad) {
     inputIsOK = false;
-    errorText.textContent = inputTest.validationMessage;
-    invalidCSS(inputTest);
+    errorText.textContent = elementToCheck.validationMessage;
+    invalidCSS(elementToCheck);
     console.log("Test NOK : Input is bad");
   } else {
     inputIsOK = true;
   }
 }
 
-function checkNames(inputTest, nameType, errorText) {
-  let nameValue = inputTest.value;
-  checkBadValues(inputTest, errorText);
+function checkNames(elementToCheck, nameType, errorText) {
+  let nameValue = elementToCheck.value;
+  let testRegexOK = nameRegex.test(nameValue);
+  checkBadValues(elementToCheck, errorText);
   console.log("Input type : " + nameType);
   console.log("Input value : " + nameValue);
   if (!inputIsOK) {
-    nameType === "firstname" 
-      ? (dataCheck.firstname = false) && (valueFirstname = "")
-      : (dataCheck.lastname = false) && (valueLastname = "");
+    nameType === "firstname"?
+    (dataCheck.firstname = false) && (valueFirstname = ""):
+    (dataCheck.lastname = false) && (valueLastname = "");
+  } else if (!testRegexOK) {
+    nameType === "firstname"?
+    (dataCheck.firstname = false) && (valueFirstname = ""):
+    (dataCheck.lastname = false) && (valueLastname = "");
+    invalidCSS(elementToCheck);
+    errorText.textContent = `Veuillez saisir un ${nameType==="firstname"?"prénom":"nom"} valide.`;
+    console.log(`Test NOK : ${elementToCheck.name} Regex failed`);
   } else {
     nameType === "firstname" 
       ? (dataCheck.firstname = true) && (valueFirstname = nameValue)
       : (dataCheck.lastname = true) && (valueLastname = nameValue);
-    validCSS(inputTest);
+    validCSS(elementToCheck);
     console.log("Test OK");
   }
 }
 
-function checkEmail(inputTest, errorText) {
-  let emailValue = inputTest.value;
+function checkEmail(elementToCheck, errorText) {
+  let emailValue = elementToCheck.value;
   let testRegexOK = emailRegex.test(emailValue);
-  checkBadValues(inputTest, errorText);
+  checkBadValues(elementToCheck, errorText);
   console.log("Input value : " + emailValue);
   console.log("Is input OK ? " + inputIsOK);
   console.log("Regex result : " + testRegexOK);
@@ -190,56 +214,56 @@ function checkEmail(inputTest, errorText) {
   } else if (!testRegexOK) {
     dataCheck.email = false;
     valueEmail = "";
-    invalidCSS(inputTest);
+    invalidCSS(elementToCheck);
     errorText.textContent = "Veuillez saisir une adresse e-mail valide.";
     console.log("Test NOK : Email regex failed");
   } else {
     dataCheck.email = true;
     valueEmail = emailValue;
-    validCSS(inputTest);
+    validCSS(elementToCheck);
     console.log("Test OK");
   }
 }
 
-function checkbirthdate(inputTest, errorText) {
-  let birthdateValue = inputTest.value;
+function checkbirthdate(elementToCheck, errorText) {
+  let birthdateValue = elementToCheck.value;
   let testRegexOK = birthdateRegex.test(birthdateValue);
   let isInTheFuture = birthdateValue > today;
-  checkBadValues(inputTest, errorText);
+  checkBadValues(elementToCheck, errorText);
   console.log("Input value : " + birthdateValue);
   console.log("Today date : " + today);
   console.log("Is input in the future ? " + isInTheFuture);
   console.log("Is input OK ? " + inputIsOK);
   console.log("Regex result : " + testRegexOK);
-  if (!inputIsOK && inputTest.validity.rangeUnderflow) {
+  if (!inputIsOK && elementToCheck.validity.rangeUnderflow) {
     dataCheck.birthdate = false;
     valuebirthdate = today;
-    invalidCSS(inputTest);
+    invalidCSS(elementToCheck);
     errorText.textContent = "Veuillez sélectionner une valeur postérieure ou égale à 01/01/1950.";
     console.log("Test NOK : Not in date range");
   } else if (!testRegexOK) {
     dataCheck.birthdate = false;
     valuebirthdate = today;
-    invalidCSS(inputTest);
+    invalidCSS(elementToCheck);
     errorText.textContent = "Veuillez saisir une date de naissance valide.";
     console.log("Test NOK : birthdate regex failed");
   } else if (testRegexOK && isInTheFuture) {
     dataCheck.birthdate = false;
     valuebirthdate = today;
-    invalidCSS(inputTest);
+    invalidCSS(elementToCheck);
     errorText.textContent = "Veuillez saisir une date de naissance inférieure à la date du jour.";
     console.log("Test NOK : birthdate is in the future");
   } else {
     dataCheck.birthdate = true;
     valuebirthdate = birthdateValue;
-    validCSS(inputTest);
+    validCSS(elementToCheck);
     console.log("Test OK");
   }
 }
 
-function checkQuantity(inputTest, errorText) {
-  let quantityValue = inputTest.valueAsNumber;
-  checkBadValues(inputTest, errorText);
+function checkQuantity(elementToCheck, errorText) {
+  let quantityValue = elementToCheck.valueAsNumber;
+  checkBadValues(elementToCheck, errorText);
   console.log("Input value : " + quantityValue);
   if (!inputIsOK) {
     dataCheck.quantity = false;
@@ -247,21 +271,50 @@ function checkQuantity(inputTest, errorText) {
   } else {
     dataCheck.quantity = true;
     valueQuantity = quantityValue;
-    validCSS(inputTest);
+    validCSS(elementToCheck);
     console.log("Test OK");
   }
 }
 
-function checkTOS(inputTest, errorText) {
-  if (inputTest.checked) {
+function checkLocation(elementToCheck) {
+  const errorLocationText = document.querySelector(".location-errormsg");
+  dataCheck.location = true;
+  valueLocation = elementToCheck.value;
+  console.log("Current location : " + valueLocation)
+  errorLocationText.classList.remove("show-error");
+  console.log("Test OK");
+}
+
+function locationFalse() {
+  const errorLocationText = document.querySelector(".location-errormsg");
+  errorLocationText.textContent = "Veuillez sélectionner une option.";
+  errorLocationText.classList.add("show-error");
+  console.log("Test NOK : No location selected");
+}
+
+function checkTOS(elementToCheck) {
+  const errorText = elementToCheck.parentElement.querySelector(".errormsg");
+  if (elementToCheck.checked) {
     dataCheck.tos = true;
-    validCSS(inputTest);
+    valueTOS = "Oui";
+    validCSS(elementToCheck);
     console.log("Test OK");
   } else {
     dataCheck.tos = false;
-    invalidCSS(inputTest);
+    valueTOS = "";
+    invalidCSS(elementToCheck);
     errorText.textContent = "Vous devez valider les conditions générales afin de vous inscrire.";
     console.log("Test NOK : TOS not checked");
+  }
+}
+
+function checkNews(elementToCheck) {
+  if (elementToCheck.checked) {
+    valueNews = "Oui";
+    console.log("News YES");
+  } else {
+    valueNews = "";
+    console.log("News NO");
   }
 }
 
@@ -269,28 +322,51 @@ function checkTOS(inputTest, errorText) {
 function submitCheck() {
   inputsCheck.forEach(input => keepInputs(input));
   keepInputs(birthdate);
-  checkLocation(locationRadio);
+  if (dataCheck.location == false) {
+    console.log("--- Submit Location Check ---");
+    locationFalse();
+  };
 }
-
-function checkLocation() {
-  const errorMsg = document.querySelector(".location-errormsg");
-  console.log("--- Location test ---");
-  for (radio of locationRadio) {
-    if (radio.checked) {
-      valueLocation = locationRadio.value;
-      dataCheck.location = true;
-      errorMsg.classList.remove("show-error");
-      console.log("Test OK");
-      break;
-    } else {
-      dataCheck.location = false;
-      errorMsg.textContent = "Veuillez sélectionner une option.";
-      errorMsg.classList.add("show-error");
-      console.log("Test NOK : No location selected");
-    }
+class storeValues {
+  constructor (
+    firstname,
+    lastname,
+    email,
+    birthdate,
+    quantity,
+    location,
+    tos,
+    news
+  ) {
+    this.firstname = firstname;
+    this.lastname = lastname;
+    this.email = email;
+    this.birthdate = birthdate;
+    this.quantity = quantity;
+    this.location = location;
+    this.tos = tos;
+    this.news = news;
   }
-}
+};
 
 function validate() {
-  // submitCheck;
+  submitCheck();
+  let allTrue = Object.keys(dataCheck).every(function(k){ return dataCheck[k] });
+  if (allTrue) {
+    const dataTab = new storeValues(
+      valueFirstname,
+      valueLastname,
+      valueEmail,
+      valuebirthdate,
+      valueQuantity,
+      valueLocation,
+      valueTOS,
+      valueNews
+    );
+    console.log("~~~~ TOUT EST OK ~~~~");
+    console.log(dataTab);
+    return false;
+  } else {
+    return false;
+  }
 }
