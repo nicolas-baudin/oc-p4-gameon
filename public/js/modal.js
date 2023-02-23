@@ -255,7 +255,7 @@ function checkQuantity(elementToCheck, errorText) {
     validCSS(elementToCheck);
   }
 }
-// Check birthdate checkValidity / regex / if the date is in the future
+// Check Location
 function checkLocation(elementToCheck) {
   const errorLocationText = document.querySelector(".location-errormsg");
   dataCheck.location = true;
