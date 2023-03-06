@@ -24,14 +24,18 @@ const formOkBtn = document.querySelector(".formok-close");
 let inputIsOK;
 let elementToCheck;
 // Base values
+const defaultQuantity = 0;
+const defaultLocation = "New York";
+const defaultNews = "Non";
+//
 let valueFirstname;
 let valueLastname;
 let valueEmail;
 let valuebirthdate;
-let valueQuantity;
-let valueLocation;
+let valueQuantity = defaultQuantity;
+let valueLocation = defaultLocation;
 let valueTOS;
-let valueNews;
+let valueNews = defaultNews;
 // It will be usefull to create an array with the valid values at submit
 class storeValues {
   constructor (
@@ -64,8 +68,8 @@ const dataCheck = {
   lastname: false,
   email: false,
   birthdate: false,
-  quantity: false,
-  location: false,
+  quantity: true,
+  location: true,
   tos: false
 };
 // Tables used for listeners
@@ -320,6 +324,17 @@ function submitCheck() {
     locationFalse();
   };
 }
+function dataCheckFalse(){
+  for (key of Object.keys(dataCheck)) {
+    dataCheck[key] = false;
+  }
+  dataCheck.quantity = true;
+  dataCheck.location = true;
+  valueQuantity = defaultQuantity;
+  valueLocation = defaultLocation;
+  valueNews = defaultNews;
+}
+
 // Triggered by the formOkBtn : line 111
 function formAgain() {
   form.reset();
@@ -332,6 +347,8 @@ function formAgain() {
     input.classList.remove("input-ok");
   };
   birthdate.classList.remove("input-ok");
+  dataCheckFalse();
+  console.log(dataCheck);
 }
 
 // --- Submit who trigger the submit functions

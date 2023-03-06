@@ -20,7 +20,7 @@ body {
   font-family: var(--font-default);
   font-size: 18px;
   max-width: 1380px; /* PROJECT FIX */
-  min-width: 420px; /* PROJECT FIX */
+  min-width: 320px; /* PROJECT FIX */
   margin: 0 auto;
 }
 
@@ -202,7 +202,7 @@ main {
   .content {
     margin: 120px 0 0 0;
     width: 100%;
-    min-width: 490px;
+    min-width: 320px;
     border-radius: 10px 10px 0 0;
     position: fixed;
     bottom: 0;
